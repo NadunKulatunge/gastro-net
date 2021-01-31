@@ -1,9 +1,11 @@
 {% extends "index.html" %}
 {% block content %}
 <th>
-<img width="400px" height="250px" src="{{imagesource}}" />
+	<div class="row text-center">
+		<img width="200px" height="150px" src="{{imagesource}}" />
+	</div>
 </th>
 <th>
-{{label}}
+	<h3 class="text-center">{{label}}</h3>
 </th>
 {% endblock %}

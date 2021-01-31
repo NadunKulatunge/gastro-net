@@ -1,20 +1,26 @@
 <html>
-<title>Flowers AI</title>
+<title>Gastro AI</title>
 <!-- stylesheets -->
 <link href="//maxcdn.bootstrapcdn.com/bootswatch/3.2.0/yeti/bootstrap.min.css" rel="stylesheet" media="screen">
 <link href="{{ url_for('static', filename='main.css') }}" rel="stylesheet">
 <div class="row">
  
-  <div class="col-md-7">
-    <h1>Flowers AI - Daisy, Rose or Sunflowers ?</h1>
-	<h2>Upload a flower image</h2>
+  <div class="col-md-12">
+    <h1 class="text-center">Gastro AI - Classification and Polyp Segmentation</h1>
+	<h2 class="text-center">Upload a Gastrointestinal image to classify it!</h2>
     <br>
-    <form action="" method=post enctype=multipart/form-data>
-      <input type=file name=file>
-      <input type=submit value=Upload>
-    </form>
+	
+	<table class="table">
+		<form action="" method=post enctype=multipart/form-data>
+			<tr>
+			  <th><input type=file name=file></th>
+			  <th><input type=submit value=Upload></th>
+			</tr>
+		</form>
+	</table>
+    
 
-    <h2>Results</h2>
+    <h3>Results</h3>
     <br>
     <table class="table" id="results-table">
         <tr>
