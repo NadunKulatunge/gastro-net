@@ -15,9 +15,17 @@ import uuid
 import base64
 
 img_width, img_height = 224, 224
-model_path = './models/endoscopy_vgg16.h5'
-#model_weights_path = './models/weights.h5'
+
+from keras.utils.data_utils import get_file
+model_path = get_file(
+            'endoscopy_vgg16.h5',
+            'http://encounter.lk/endoscopy_vgg16.h5')
 model = load_model(model_path)
+
+#model_path = './models/endoscopy_vgg16.h5'
+#model = load_model(model_path)
+
+#model_weights_path = './models/weights.h5'
 #model.load_weights(model_weights_path)
 
 UPLOAD_FOLDER = 'uploads'
