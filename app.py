@@ -6,6 +6,8 @@ from werkzeug.utils import secure_filename
 from werkzeug.middleware.shared_data import SharedDataMiddleware
 from keras.preprocessing.image import ImageDataGenerator, load_img, img_to_array
 from keras.models import Sequential, load_model
+from keras.utils.data_utils import get_file
+from flask import send_from_directory
 import numpy as np
 import argparse
 import imutils
@@ -16,12 +18,14 @@ import base64
 
 img_width, img_height = 224, 224
 
-from keras.utils.data_utils import get_file
-#model_path = get_file('endoscopy_vgg16.h5','http://encounter.lk/endoscopy_vgg16.h5')
-#model = load_model(model_path)
 
-model_path = './models/endoscopy_vgg16.h5'
-model = load_model(model_path)
+
+# model_path = './models/endoscopy_vgg16.h5'
+# model = load_model(model_path)
+model1 = load_model('./models/endoscopy_densenet201.h5')
+model2 = load_model('./models/endoscopy_resnet50.h5')
+model3 = load_model('./models/endoscopy_vgg16.h5')
+models = [model1, model2, model3]
 
 #model_weights_path = './models/weights.h5'
 #model.load_weights(model_weights_path)
@@ -29,16 +33,32 @@ model = load_model(model_path)
 UPLOAD_FOLDER = 'uploads'
 ALLOWED_EXTENSIONS = set(['jpg', 'jpeg'])
 
+yhats = [[[0,0,0,0,0,0,0,0]],[[0,0,0,0,0,0,0,0]],[[0,0,0,0,0,0,0,0]]]
+
 def get_as_base64(url):
     return base64.b64encode(requests.get(url).content)
 
+def ensemble_predictions(members, testX):
+  global yhats
+  
+  yhats = [model.predict(testX) for model in members]
+  yhats = np.array(yhats)
+  # sum across ensemble members, sum of each class probabilities according to different model
+  for x in yhats:
+    print(x)
+  summed = np.sum(yhats, axis=0)
+  # argmax across classes to choose most suitable class
+  result = np.argmax(summed, axis=1)
+  return result
+  
 def predict(file):
     x = load_img(file, target_size=(img_width,img_height))
     x = img_to_array(x)
     x = np.expand_dims(x, axis=0)
-    array = model.predict(x)
-    result = array[0]
-    answer = np.argmax(result)
+    
+    class_index = ensemble_predictions(models, x)[0]
+    
+    answer = int(class_index)
     if answer == 0:
         print("Label: Dyed Lifted Polyp")
     elif answer == 1:
@@ -52,7 +72,7 @@ def predict(file):
     elif answer == 5:
 	    print("Label: Normal Z-Line")
     elif answer == 6:
-	    print("Label: Polyps")
+	    print("Label: Polyp")
     elif answer == 7:
 	    print("Label: Ulcerative Colitis")
     return answer
@@ -73,7 +93,7 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 @app.route("/")
 def template_test():
-    return render_template('template.html', label='', imagesource='../uploads/template.jpg')
+    return render_template('template.html', label='', imagesource='../uploads/template.jpg', yhats=yhats)
 
 @app.route('/', methods=['GET', 'POST'])
 def upload_file():
@@ -87,7 +107,10 @@ def upload_file():
 
             file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             file.save(file_path)
+
             result = predict(file_path)
+            
+            
             if result == 0:
                 label = 'Dyed Lifted Polyp'
             elif result == 1:
@@ -101,7 +124,7 @@ def upload_file():
             elif result == 5:
                 label = 'Normal Z-Line'
             elif result == 6:
-                label = 'Polyps'
+                label = 'Polyp'
             elif result == 7:
                 label = 'Ulcerative Colitis'
             print(result)
@@ -110,9 +133,8 @@ def upload_file():
 
             os.rename(file_path, os.path.join(app.config['UPLOAD_FOLDER'], filename))
             print("--- %s seconds ---" % str (time.time() - start_time))
-            return render_template('template.html', label=label, imagesource='../uploads/' + filename)
+            return render_template('template.html', label=label, imagesource='../uploads/' + filename, yhats=yhats)
 
-from flask import send_from_directory
 
 @app.route('/uploads/<filename>')
 def uploaded_file(filename):
@@ -127,4 +149,4 @@ app.wsgi_app = SharedDataMiddleware(app.wsgi_app, {
 
 if __name__ == "__main__":
     app.debug=False
-    app.run(host='127.0.0.1', port=3000)
+    app.run(host='127.0.0.1', port=5000)

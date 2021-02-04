@@ -3,37 +3,39 @@
 <!-- stylesheets -->
 <link href="//maxcdn.bootstrapcdn.com/bootswatch/3.2.0/yeti/bootstrap.min.css" rel="stylesheet" media="screen">
 <link href="{{ url_for('static', filename='main.css') }}" rel="stylesheet">
-<div class="row">
- 
-  <div class="col-md-12">
-    <h1 class="text-center">Gastro AI - Classification and Polyp Segmentation</h1>
-	<h2 class="text-center">Upload any Endoscopy image to classify it!</h2>
-    <br>
-	
-	<table class="table">
-		<form action="" method=post enctype=multipart/form-data>
-			<tr>
-			  <th><input type=file name=file></th>
-			  <th><input type=submit value=Upload></th>
-			</tr>
-		</form>
-	</table>
-    
+<div class="container">
+	<div class="row">
+	 
+	  <div class="col-md-12">
+		<h1 class="text-center">Gastro Net - Classification and Polyp Segmentation</h1>
+		<h2 class="text-center">Upload any Endoscopy image to classify it!</h2>
+		<br>
+		<p class="text-justify">Click on 'Choose a file' button to select a Gastrointestinal image and then click on the 'Upload' button to classify it. The 8 classes that can be predicted by our ensembled model are displayed below. Once the image has been classified successfully the prediction accuracies of each model and class each image belongs to will be displayed on the table underneath the results table.<p>
+		<table class="table">
+			<form action="" method=post enctype=multipart/form-data>
+				<tr class="text-center">
+				  <th></th>
+				  <th class="text-center"><input type=file name=file></th>
+				  <th></th>
+				</tr>
+				<tr class="text-center">
+				  <th></th>
+				  <th class="text-center"><input type=submit value=Upload></th>
+				  <th></th>
+				</tr>
+				
+			</form>
+		</table>
+		
 
-    <h3>Results</h3>
-    <br>
-    <table class="table" id="results-table">
-        <tr>
-          <th>Image</th>
-          <th>Prediction</th>
-        </tr>
-		<tr>
-          {% block content %}{% endblock %}
-        </tr>
-    </table>
-  </div>
- 
+		<h3>Results</h3>
+		<br>
+		
+		{% block content %}{% endblock %}
+			
+	  </div>
+	 
+	</div>
 </div>
-
 </html>
  

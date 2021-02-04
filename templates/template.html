@@ -1,11 +1,78 @@
 {% extends "index.html" %}
 {% block content %}
-<th>
-	<div class="row text-center">
-		<img width="200px" height="150px" src="{{imagesource}}" />
-	</div>
-</th>
-<th>
-	<h3 class="text-center">{{label}}</h3>
-</th>
+<table class="table" id="results-table">
+	<tr>
+	  <th>Image</th>
+	  <th>Prediction</th>
+	</tr>
+	<tr>
+	  <th>
+		<div class="row text-center">
+			<img width="200px" height="150px" src="{{imagesource}}" />
+		</div>
+	  </th>
+	  <th>
+		<h3 class="text-center">{{label}}</h3>
+	  </th>
+	</tr>
+</table>
+
+
+<table class="table table-bordered" id="results-table">
+	<tr>
+	  <th>Class</th>
+	  <th>Densenet201 Prediction</th>
+	  <th>Resnet50 Prediction</th>
+	  <th>Vgg16 Prediction</th>
+	</tr>
+	<tr {% if label == "Dyed Lifted Polyp" %}class="success"{% endif %} >
+	  <th>Dyed Lifted Polyp</th>
+	  <th>{{100*yhats[0][0][0]|round(2, 'floor')}}</th>
+	  <th>{{100*yhats[1][0][0]|round(2, 'floor')}}</th>
+	  <th>{{100*yhats[2][0][0]|round(2, 'floor')}}</th>
+	</tr>
+	<tr {% if label == "Dyed Resection Margin" %}class="success"{% endif %} >
+	  <th>Dyed Resection Margin</th>
+	  <th>{{100*yhats[0][0][1]|round(2, 'floor')}}</th>
+	  <th>{{100*yhats[1][0][1]|round(2, 'floor')}}</th>
+	  <th>{{100*yhats[2][0][1]|round(2, 'floor')}}</th>
+	</tr>
+	<tr {% if label == "Esophagitis" %}class="success"{% endif %} >
+	  <th>Esophagitis</th>
+	  <th>{{100*yhats[0][0][2]|round(2, 'floor')}}</th>
+	  <th>{{100*yhats[1][0][2]|round(2, 'floor')}}</th>
+	  <th>{{100*yhats[2][0][2]|round(2, 'floor')}}</th>
+	</tr>
+	<tr {% if label == "Normal Cecum" %}class="success"{% endif %} >
+	  <th>Normal Cecum</th>
+	  <th>{{100*yhats[0][0][3]|round(2, 'floor')}}</th>
+	  <th>{{100*yhats[1][0][3]|round(2, 'floor')}}</th>
+	  <th>{{100*yhats[2][0][3]|round(2, 'floor')}}</th>
+	</tr>
+	<tr {% if label == "Normal Pylorus" %}class="success"{% endif %} >
+	  <th>Normal Pylorus</th>
+	  <th>{{100*yhats[0][0][4]|round(2, 'floor')}}</th>
+	  <th>{{100*yhats[1][0][4]|round(2, 'floor')}}</th>
+	  <th>{{100*yhats[2][0][4]|round(2, 'floor')}}</th>
+	</tr>
+	<tr {% if label == "Normal Z-Line" %}class="success"{% endif %} >
+	  <th>Normal Z-Line</th>
+	  <th>{{100*yhats[0][0][5]|round(2, 'floor')}}</th>
+	  <th>{{100*yhats[1][0][5]|round(2, 'floor')}}</th>
+	  <th>{{100*yhats[2][0][5]|round(2, 'floor')}}</th>
+	</tr>
+	<tr {% if label == "Polyp" %}class="success"{% endif %} >
+	  <th>Polyp</th>
+	  <th>{{100*yhats[0][0][6]|round(2, 'floor')}}</th>
+	  <th>{{100*yhats[1][0][6]|round(2, 'floor')}}</th>
+	  <th>{{100*yhats[2][0][6]|round(2, 'floor')}}</th>
+	</tr>
+	<tr {% if label == "Ulcerative Colitis" %}class="success"{% endif %} >
+	  <th>Ulcerative Colitis</th>
+	  <th>{{100*yhats[0][0][7]|round(2, 'floor')}}</th>
+	  <th>{{100*yhats[1][0][7]|round(2, 'floor')}}</th>
+	  <th>{{100*yhats[2][0][7]|round(2, 'floor')}}</th>
+	</tr>
+</table>
+
 {% endblock %}
