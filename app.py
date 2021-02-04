@@ -19,9 +19,6 @@ import base64
 img_width, img_height = 224, 224
 
 
-
-# model_path = './models/endoscopy_vgg16.h5'
-# model = load_model(model_path)
 model1 = load_model('./models/endoscopy_densenet201.h5')
 model2 = load_model('./models/endoscopy_resnet50.h5')
 model3 = load_model('./models/endoscopy_vgg16.h5')
@@ -41,23 +38,21 @@ def get_as_base64(url):
 def ensemble_predictions(members, testX):
   global yhats
   
+  # sum across ensemble members, sum of each class probabilities according to different model
   yhats = [model.predict(testX) for model in members]
   yhats = np.array(yhats)
   # sum across ensemble members, sum of each class probabilities according to different model
-  for x in yhats:
-    print(x)
   summed = np.sum(yhats, axis=0)
   # argmax across classes to choose most suitable class
   result = np.argmax(summed, axis=1)
   return result
-  
+
 def predict(file):
+              
     x = load_img(file, target_size=(img_width,img_height))
     x = img_to_array(x)
     x = np.expand_dims(x, axis=0)
-    
     class_index = ensemble_predictions(models, x)[0]
-    
     answer = int(class_index)
     if answer == 0:
         print("Label: Dyed Lifted Polyp")
@@ -110,7 +105,6 @@ def upload_file():
 
             result = predict(file_path)
             
-            
             if result == 0:
                 label = 'Dyed Lifted Polyp'
             elif result == 1:
@@ -150,3 +144,4 @@ app.wsgi_app = SharedDataMiddleware(app.wsgi_app, {
 if __name__ == "__main__":
     app.debug=False
     app.run(host='127.0.0.1', port=5000)
+
